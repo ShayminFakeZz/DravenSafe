@@ -44,6 +44,7 @@
     <Reference Include="SharpDX">
       <HintPath>..\..\..\..\Downloads\Hacks\EloBuddy\System\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=2306ab36a61019a8" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

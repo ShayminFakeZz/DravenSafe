@@ -13,7 +13,7 @@ using EloBuddy.SDK.Rendering;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Enumerations;
-
+using SharpDX.Direct3D9;
 
 namespace DravenSafe
 {
@@ -22,6 +22,7 @@ namespace DravenSafe
 
         private static Spell.Active Q, W;
         private static Spell.Skillshot E, R;
+        private static Font DisplayQActiveTime = new Font(Drawing.Direct3DDevice, new System.Drawing.Font("Tahoma", 35));
 
         static void Main(string[] args)
         {
@@ -40,11 +41,10 @@ namespace DravenSafe
             {
                 AllowedCollisionCount = int.MaxValue
             };
-
         }
 
         private static void Loading_OnLoadingComplete(EventArgs args)
-        {
+        { 
             //Return, falls der Champion nicht Draven ist.
             if (Player.Instance.ChampionName != "Draven")
             {
@@ -57,7 +57,7 @@ namespace DravenSafe
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            string playerName = "::";
+            string playerName = string.Empty;
             //Loopt durch alle Spieler im Team
             foreach (var hero in EntityManager.Heroes.Allies)
             {
@@ -67,32 +67,23 @@ namespace DravenSafe
                     playerName = hero.Name;
                 }
             }
+
             Drawing.DrawText(Drawing.Width - 200, Drawing.Height - 1000, System.Drawing.Color.OrangeRed, "|-- Draven by Ole & Julian --|\n" +
                 "EB: " + SandboxConfig.Username + "\n" +
                 "Buddy: " + SandboxConfig.IsBuddy + "\n" +
                 "Summoner: " + playerName);
 
-
-            Text buffActive = new Text();
-            /*
-            buffActive.Color = System.Drawing.Color.Orange;
-            buffActive.Position = Drawing.WorldToScreen(new Vector3(Player.Instance.Position.X + 50, Player.Instance.Position.Y, Player.Instance.Position.Z));
-            buffActive.TextValue = "LLLLLLLLLL";
-            buffActive.Draw();
-            */
-
             if (Player.HasBuff("dravenspinningattack"))
             {
-
                 float buffEndTime = Player.GetBuff("dravenspinningattack").EndTime;
                 var timeLeft = Math.Max(0, buffEndTime - Game.Time);
+                DisplayQActiveTime.DrawText(null,"Q Restzeit: " + timeLeft.ToString("F1") + " s", 1220, 1010, Color.OrangeRed);
             }
-
         }
-
 
         private static void CreateMenu()
         {
+   
         }
 
         private static void CastQ()
