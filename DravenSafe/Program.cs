@@ -29,7 +29,21 @@ namespace DravenSafe
             Loading.OnLoadingComplete += Loading_OnLoadingComplete;
         }
 
-        private static void Spells()
+        private static void Loading_OnLoadingComplete(EventArgs args)
+        { 
+            //Return, falls der Champion nicht Draven ist.
+            if (Player.Instance.ChampionName != "Draven")
+            {
+                Console.WriteLine(Player.Instance.ChampionName + " ist nicht Draven");
+                return;
+            }
+            Chat.Print("Willkommen " + SandboxConfig.Username);
+            //Lädt Spells durch Funktion LoadSpells
+            LoadSpells();
+            Drawing.OnDraw += OnDraw;
+        }
+
+        private static void LoadSpells()
         {
             Q = new Spell.Active(SpellSlot.Q);
             W = new Spell.Active(SpellSlot.W);
@@ -43,19 +57,7 @@ namespace DravenSafe
             };
         }
 
-        private static void Loading_OnLoadingComplete(EventArgs args)
-        { 
-            //Return, falls der Champion nicht Draven ist.
-            if (Player.Instance.ChampionName != "Draven")
-            {
-                Console.WriteLine(Player.Instance.ChampionName + " ist nicht Draven");
-                return;
-            }
-            Chat.Print("Willkommen " + SandboxConfig.Username);
-            Drawing.OnDraw += Drawing_OnDraw;
-        }
-
-        private static void Drawing_OnDraw(EventArgs args)
+        private static void OnDraw(EventArgs args)
         {
             string playerName = string.Empty;
             //Loopt durch alle Spieler im Team
@@ -78,6 +80,12 @@ namespace DravenSafe
                 float buffEndTime = Player.GetBuff("dravenspinningattack").EndTime;
                 var timeLeft = Math.Max(0, buffEndTime - Game.Time);
                 DisplayQActiveTime.DrawText(null,"Q Restzeit: " + timeLeft.ToString("F1") + " s", 1220, 1010, Color.OrangeRed);
+            }
+
+            //Draw E falls bereit und nicht auf cd
+            if(E.IsReady() && !E.IsOnCooldown)
+            {
+                Circle.Draw(Color.Aqua, E.Range, Player.Instance.Position);
             }
         }
 
